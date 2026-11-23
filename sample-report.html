@@ -1,0 +1,457 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit — test-project</title></head>
+<body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:860px;margin:0 auto;padding:24px;color:#0f172a;background:#f8fafc">
+<div style="display:flex;gap:20px;align-items:center;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px">
+  <div style="font-size:52px;font-weight:800;line-height:1;text-align:center;min-width:110px">0<div style="font-size:13px;color:#64748b;font-weight:600">/ 100 &middot; grade F</div></div>
+  <div><h1 style="margin:0 0 6px;font-size:22px">Audit: test-project</h1>
+  <div style="color:#64748b;font-size:14px">2026-11-23 18:31 &middot; 4 critical &middot; 6 high &middot; 9 medium &middot; 10 low</div></div>
+</div>
+<h2 style="margin-top:28px">In plain English</h2>
+<ul><li>Supabase service_role key shipped in code — A service_role key bypasses ALL row-level security. Anyone who reads this file can read and write every row in the database.</li><li>Committed .env file — A .env file with real secrets is committed to the repo.</li><li>Supabase service_role key shipped in code — A service_role key bypasses ALL row-level security. Anyone who reads this file can read and write every row in the database.</li></ul>
+<p><b>What to do first:</b> Fix the critical items first (above), then the high ones — in that order.</p>
+<h2 style="margin-top:28px">Stack</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid #e2e8f0;border-radius:12px"><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Languages</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">Python (10 files), JavaScript (1 files)</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Frameworks</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">Flask</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Database</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">SQLAlchemy, Supabase</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Auth</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">—</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Payments</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">Stripe</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Hosting</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">—</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">CI</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">none</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Tests</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">0 test file(s)</td></tr><tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b">Vulnerability check</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0">no versioned dependencies found</td></tr></table>
+<h2 style="margin-top:32px">Data structure — tables found (1)</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px"><tr><th style="text-align:left;padding:6px 10px">Table</th><th style="text-align:left;padding:6px 10px">Columns</th><th style="text-align:left;padding:6px 10px">Defined in</th></tr><tr><td style='padding:6px 10px;border-bottom:1px solid #e2e8f0'>User</td><td style='padding:6px 10px;border-bottom:1px solid #e2e8f0'>id, email, name</td><td style='padding:6px 10px;border-bottom:1px solid #e2e8f0;color:#64748b'>src/models.py</td></tr></table>
+<h2 style="margin:28px 0 8px"><span style="background:#B91C1C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">critical</span> 4 findings</h2>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Supabase service_role key shipped in code</strong><span style="background:#B91C1C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">critical</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">.env:1 &middot; Secrets</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A service_role key bypasses ALL row-level security. Anyone who reads this file can read and write every row in the database.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> This is the single most dangerous finding in a Supabase app. It turns the database into a public one.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Move the key to a server-only env var (SUPABASE_SERVICE_ROLE_KEY) that is never bundled into client code.</li><li>Rotate the key in the Supabase dashboard (Settings → API → service_role → Rotate).</li><li>Use the anon key in the browser, and run privileged work through a server route or Edge Function.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In .env, remove the hardcoded Supabase service_role JWT and replace it with a server-only environment variable (SUPABASE_SERVICE_ROLE_KEY) loaded on the server only. Then rotate the key in the Supabase dashboard. Never import it in client-side code.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Committed .env file</strong><span style="background:#B91C1C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">critical</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">.env &middot; Secrets</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A .env file with real secrets is committed to the repo.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> This is the classic leak: the file is in git history forever, and anyone who clones the repo gets the keys.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Delete the file from git (git rm --cached .env) and add .env to .gitignore.</li><li>Rotate every key that was in the file.</li><li>Commit a .env.example with placeholder values instead.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Remove .env from git tracking (git rm --cached .env), add .env to .gitignore, rotate every key that was inside it, and add a .env.example with placeholders.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Supabase service_role key shipped in code</strong><span style="background:#B91C1C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">critical</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/app.js:3 &middot; Secrets</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A service_role key bypasses ALL row-level security. Anyone who reads this file can read and write every row in the database.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> This is the single most dangerous finding in a Supabase app. It turns the database into a public one.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Move the key to a server-only env var (SUPABASE_SERVICE_ROLE_KEY) that is never bundled into client code.</li><li>Rotate the key in the Supabase dashboard (Settings → API → service_role → Rotate).</li><li>Use the anon key in the browser, and run privileged work through a server route or Edge Function.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In src/app.js, remove the hardcoded Supabase service_role JWT and replace it with a server-only environment variable (SUPABASE_SERVICE_ROLE_KEY) loaded on the server only. Then rotate the key in the Supabase dashboard. Never import it in client-side code.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">JWT decoded without signature verification</strong><span style="background:#B91C1C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">critical</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(code) &middot; Auth &amp; access</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A JWT is decoded with verification turned off, so anyone can forge a token claiming to be any user.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Authentication is effectively absent: a forged token gets admin access.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Verify the signature with the real secret/public key on every decode.</li><li>Never accept alg=none or unverified tokens.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Find the jwt.decode call with verification disabled and verify the signature with the real secret or public key. Never accept unverified tokens.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div><h2 style="margin:28px 0 8px"><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span> 6 findings</h2>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">OpenAI-style secret key in code</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">.env:2 &middot; Secrets</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A openai-style secret key is written directly in the code. Anyone with repo access (or the built app, if this ships to the browser) can use it.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Leaked keys are how apps get drained: stolen cloud keys have produced five-figure bills in days, and a leaked Stripe key lets anyone refund or charge.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Move the value to an environment variable and read it with os.environ / process.env.</li><li>Rotate/revoke the leaked key now — deleting it from the file is not enough, it stays in git history.</li><li>Add the file to .gitignore and check git history for the key (git log -S &#x27;&lt;key&gt;&#x27;).</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In .env line 2, remove the hardcoded openai-style secret key and read it from an environment variable instead. Then rotate/revoke the key with its provider.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Database URL with password in code</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/db.py:1 &middot; Secrets</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A database url with password is written directly in the code. Anyone with repo access (or the built app, if this ships to the browser) can use it.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Leaked keys are how apps get drained: stolen cloud keys have produced five-figure bills in days, and a leaked Stripe key lets anyone refund or charge.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Move the value to an environment variable and read it with os.environ / process.env.</li><li>Rotate/revoke the leaked key now — deleting it from the file is not enough, it stays in git history.</li><li>Add the file to .gitignore and check git history for the key (git log -S &#x27;&lt;key&gt;&#x27;).</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In src/db.py line 1, remove the hardcoded database url with password and read it from an environment variable instead. Then rotate/revoke the key with its provider.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Supabase in use, no RLS evidence in repo — verify in dashboard</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Data security</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The code uses Supabase but no migration or SQL file in the repo turns on row-level security. Tables may be open to anyone with the anon key.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> This is the most common vibe-coded data breach: thousands of Supabase databases were found publicly readable in 2026 because tables created by agents skip RLS by default.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Open the Supabase dashboard → Table Editor → each table → enable RLS.</li><li>Add a policy per table (e.g. users can only read their own rows: auth.uid() = user_id).</li><li>Add the RLS SQL to a migration file in the repo so it is versioned, not just a dashboard click.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">For every Supabase table, enable row-level security and add a policy that restricts rows to their owner (auth.uid() = user_id or equivalent). Put the SQL in a migration file in the repo so it is versioned.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">API route with no auth check (verify)</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/routes/api/users.py &middot; Auth &amp; access</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> This API route writes data or calls other services but shows no sign of checking who is calling it.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> If it really is open, anyone on the internet can trigger the same writes the app does.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add an auth check at the top of the route (session/token verification).</li><li>If the route is meant to be public, add rate limiting and keep it read-only.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In src/routes/api/users.py, add an authentication check at the top of the route (verify the session or token) before any database write or external call. If the route must stay public, add rate limiting and make it read-only.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Weak or placeholder session secret</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(code) &middot; Auth &amp; access</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A session/JWT secret is short or a guessable placeholder like &#x27;secret&#x27; or &#x27;change-me&#x27;.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Anyone who guesses it can forge sessions for any user.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Generate a long random secret (32+ bytes) and put it in an env var.</li><li>Rotate it and invalidate old sessions.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Replace the short or placeholder session/JWT secret with a long random value (32+ bytes) stored in an environment variable, and invalidate existing sessions.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Stripe webhook without signature verification</strong><span style="background:#C2410C;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">high</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(code) &middot; Payments</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A Stripe webhook endpoint exists but no signature check is visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Anyone can POST a fake &#x27;payment succeeded&#x27; event and get the product for free.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Verify the signature with stripe.webhooks.constructEvent(rawBody, sig, endpointSecret) on every webhook.</li><li>Use the raw request body — a parsed JSON body breaks the signature.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In the Stripe webhook handler, verify the signature with stripe.webhooks.constructEvent using the raw request body and the endpoint secret, and reject any request that fails verification.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div><h2 style="margin:28px 0 8px"><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span> 9 findings</h2>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Signup exists but no password reset</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Flows</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> Users can create accounts with a password but there is no way to recover a forgotten one.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Locked-out users email support or leave — and support tickets cost more than the fix.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a forgot-password page that emails a time-limited reset link.</li><li>Never reveal whether an email is registered in the reset response.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a forgot-password flow: a page that emails a time-limited reset link, and a reset page that sets the new password. Do not reveal whether an email is registered.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">File upload without size/type limits</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(code) &middot; Flows</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The app accepts uploads but no size or file-type limit is visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> One user can upload a 2GB file and fill the disk, or upload an executable that gets served back.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Limit uploads (e.g. 5MB, images/PDF only) on the server — client-side checks alone are not enough.</li><li>Store uploads outside the web root and serve them with the right content type.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add server-side upload limits (maximum file size and allowed file types) and store uploads outside the web root.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Database models exist but no migrations</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Data structure</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> Tables are defined in code but there is no migration system visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Schema changes are made by hand, so production and development drift apart and a deploy can break the app.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add migrations (Prisma migrate, Alembic, Django migrations, or SQL migration files).</li><li>Never edit production tables by hand.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a migration system for the database (Prisma migrate, Alembic, Django migrations or SQL migration files) and make every schema change through it.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Users table: email not marked unique</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/models.py &middot; Data structure</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The users table has an email column with no unique constraint visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Duplicate accounts for the same email break login, password reset and billing.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a unique constraint/index on the email column.</li><li>Deduplicate existing rows first.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In src/models.py, add a unique constraint on the email column of the users table (after deduplicating any existing duplicate emails).</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No tests at all</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The repo contains no test files.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Every change is a guess: nothing catches a regression before users do.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a small test suite for the critical paths first (auth, payments, main flows).</li><li>Run tests in CI on every push.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add automated tests for the critical paths first (authentication, payments, main user flows) and run them in CI on every push.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No .gitignore</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> There is no .gitignore file.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Secrets, build output and dependency folders get committed by accident.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a .gitignore for the stack (node_modules, .env, __pycache__, dist, .next, etc.).</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a .gitignore covering node_modules, .env, __pycache__, dist and build folders for this stack.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No .env.example</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The code reads environment variables but there is no .env.example listing them.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> A new developer (or a new deploy) has to guess which variables the app needs.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Commit a .env.example with every required variable and a placeholder value.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Commit a .env.example listing every environment variable the app needs, with placeholder values.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Errors swallowed silently</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/utils.py &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> A try/except block catches errors and does nothing with them.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Failures become invisible: the app looks fine while data is silently lost.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Log the error, or re-raise it. Never `except: pass`.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">In src/utils.py, remove the silent except/pass block — log the error or re-raise it so failures are visible.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Unpinned Python dependencies</strong><span style="background:#A16207;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">medium</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">requirements.txt &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> requirements.txt lists packages without pinned versions.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> A fresh install can pull a breaking major version and the app stops working.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Pin every dependency (package==version) and regenerate with pip freeze.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Pin every dependency in requirements.txt to an exact version (package==version).</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div><h2 style="margin:28px 0 8px"><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span> 10 findings</h2>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No backup visible in the repo</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Data security</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The app has a database but no backup script, schedule or config is visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> One bad migration or deleted table, and the data is gone for good.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Enable automatic backups in the database provider (Supabase: daily backups on Pro; or a nightly pg_dump to object storage).</li><li>Test a restore once — a backup nobody has restored is a hope, not a backup.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add an automatic daily database backup (provider setting or a nightly pg_dump script) and test restoring from it once.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Login without rate limiting</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(code) &middot; Flows</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The login flow shows no rate limiting or lockout.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Attackers can try thousands of passwords against an account.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add rate limiting on login (e.g. 5 attempts per 15 minutes per IP/account).</li><li>Add a CAPTCHA after repeated failures.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add rate limiting to the login endpoint (for example 5 attempts per 15 minutes per IP and per account) and a CAPTCHA after repeated failures.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Table &#x27;User&#x27; has no created_at column</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/models.py &middot; Data structure</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The User table has no created_at timestamp.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Without it, debugging (&#x27;when did this break?&#x27;) and sorting/auditing become guesswork.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add created_at (and updated_at) columns with defaults.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add created_at and updated_at timestamp columns with defaults to the User table.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No CI configured</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> No continuous-integration config (GitHub Actions, GitLab CI, etc.) was found.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Broken code can be merged and deployed without anything ever running the tests.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a CI workflow that installs, lints and tests on every pull request.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a CI workflow (for example GitHub Actions) that installs dependencies, runs the linter and runs the tests on every pull request.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No README</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> There is no README explaining what the project is or how to run it.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Nobody — including future-you — can set the project up without reading all the code.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Write a short README: what it does, how to install, how to run, how to test.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Write a README with what the project does, how to install it, how to run it, and how to run the tests.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">Very large file: 511 lines</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">src/huge.py &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> src/huge.py is 511 lines long.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Huge files are hard to review, hard to test, and where bugs hide.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Split it by responsibility (routes / logic / data access).</li><li>Extract the biggest function first.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Split src/huge.py (511 lines) by responsibility — routes, business logic and data access in separate files — starting with the largest function.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No test script in package.json</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">package.json &middot; Code quality</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> package.json has no `test` script.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> There is no standard way to run the tests, so nobody runs them.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a `test` script that runs the test suite.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a `test` script to package.json that runs the test suite.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No hosting/deploy config</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Deploy &amp; ops</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> The app has a backend but no hosting config (Vercel, Render, Dockerfile, etc.) is visible.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Deploys are manual and unrepeatable — the app works on one machine and nowhere else.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a deploy config (Dockerfile or a host config) and document the deploy steps.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a deployment config (a Dockerfile or a hosting config for the chosen host) and document the deploy steps in the README.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No error tracking</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Deploy &amp; ops</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> No error-tracking service (Sentry, etc.) is wired in.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Production crashes are invisible until a user complains.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add Sentry (free tier) with release tracking.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add an error-tracking service such as Sentry (free tier) so production crashes are reported automatically.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin:10px 0;background:#fff">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">
+    <strong style="font-size:15px">No health endpoint</strong><span style="background:#475569;color:#fff;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase">low</span>
+  </div>
+  <div style="color:#64748b;font-size:13px;margin-top:4px">(repo-wide) &middot; Deploy &amp; ops</div>
+  <p style="margin:10px 0 4px"><b>What this means:</b> No /health endpoint exists for the host to check the app is alive.</p>
+  <p style="margin:4px 0"><b>Why it matters:</b> Hosts and load balancers cannot tell a hung app from a healthy one.</p>
+  <p style="margin:8px 0 4px"><b>Fix it:</b></p>
+  <ol style="margin:4px 0 4px 18px"><li>Add a GET /health endpoint that returns 200 and checks the database.</li></ol>
+  <details style="margin-top:10px"><summary style="cursor:pointer;color:#0f766e;font-weight:600">Give this to your AI (copy-paste prompt)</summary>
+  <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;white-space:pre-wrap;font-size:13px">Add a GET /health endpoint that returns 200 and verifies the database connection.</pre>
+  <button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:6px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy prompt</button></details>
+</div>
+<h2 style="margin-top:32px">Give this to your AI agent (all fixes in one prompt)</h2>
+<p>Copy this into Claude Code, Codex, Qoder or OpenCode with the repo open:</p>
+<pre style="background:#0f172a;color:#e2e8f0;padding:14px;border-radius:10px;white-space:pre-wrap;font-size:13px">You are a senior software engineer fixing this project. Work through these findings in order (critical first). For each one, make the change, run the tests, and confirm the finding is gone before moving on. Do not skip any. Do not introduce new dependencies unless needed.
+
+1. In .env line 2, remove the hardcoded openai-style secret key and read it from an environment variable instead. Then rotate/revoke the key with its provider.
+
+2. In .env, remove the hardcoded Supabase service_role JWT and replace it with a server-only environment variable (SUPABASE_SERVICE_ROLE_KEY) loaded on the server only. Then rotate the key in the Supabase dashboard. Never import it in client-side code.
+
+3. Remove .env from git tracking (git rm --cached .env), add .env to .gitignore, rotate every key that was inside it, and add a .env.example with placeholders.
+
+4. In src/app.js, remove the hardcoded Supabase service_role JWT and replace it with a server-only environment variable (SUPABASE_SERVICE_ROLE_KEY) loaded on the server only. Then rotate the key in the Supabase dashboard. Never import it in client-side code.
+
+5. In src/db.py line 1, remove the hardcoded database url with password and read it from an environment variable instead. Then rotate/revoke the key with its provider.
+
+6. For every Supabase table, enable row-level security and add a policy that restricts rows to their owner (auth.uid() = user_id or equivalent). Put the SQL in a migration file in the repo so it is versioned.
+
+7. Add an automatic daily database backup (provider setting or a nightly pg_dump script) and test restoring from it once.
+
+8. Find the jwt.decode call with verification disabled and verify the signature with the real secret or public key. Never accept unverified tokens.
+
+9. In src/routes/api/users.py, add an authentication check at the top of the route (verify the session or token) before any database write or external call. If the route must stay public, add rate limiting and make it read-only.
+
+10. Replace the short or placeholder session/JWT secret with a long random value (32+ bytes) stored in an environment variable, and invalidate existing sessions.
+
+11. In the Stripe webhook handler, verify the signature with stripe.webhooks.constructEvent using the raw request body and the endpoint secret, and reject any request that fails verification.
+
+12. Add a forgot-password flow: a page that emails a time-limited reset link, and a reset page that sets the new password. Do not reveal whether an email is registered.
+
+13. Add server-side upload limits (maximum file size and allowed file types) and store uploads outside the web root.
+
+14. Add rate limiting to the login endpoint (for example 5 attempts per 15 minutes per IP and per account) and a CAPTCHA after repeated failures.
+
+15. Add a migration system for the database (Prisma migrate, Alembic, Django migrations or SQL migration files) and make every schema change through it.
+
+16. In src/models.py, add a unique constraint on the email column of the users table (after deduplicating any existing duplicate emails).
+
+17. Add created_at and updated_at timestamp columns with defaults to the User table.
+
+18. Add automated tests for the critical paths first (authentication, payments, main user flows) and run them in CI on every push.
+
+19. Add a CI workflow (for example GitHub Actions) that installs dependencies, runs the linter and runs the tests on every pull request.
+
+20. Write a README with what the project does, how to install it, how to run it, and how to run the tests.
+
+21. Add a .gitignore covering node_modules, .env, __pycache__, dist and build folders for this stack.
+
+22. Commit a .env.example listing every environment variable the app needs, with placeholder values.
+
+23. Split src/huge.py (511 lines) by responsibility — routes, business logic and data access in separate files — starting with the largest function.
+
+24. In src/utils.py, remove the silent except/pass block — log the error or re-raise it so failures are visible.
+
+25. Pin every dependency in requirements.txt to an exact version (package==version).
+
+26. Add a `test` script to package.json that runs the test suite.
+
+27. Add a deployment config (a Dockerfile or a hosting config for the chosen host) and document the deploy steps in the README.
+
+28. Add an error-tracking service such as Sentry (free tier) so production crashes are reported automatically.
+
+29. Add a GET /health endpoint that returns 200 and verifies the database connection.</pre>
+<button onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText)" style="cursor:pointer;padding:8px 16px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc">Copy full prompt</button>
+<p style="color:#64748b;font-size:12px;margin-top:36px">How the score works: start at 100, minus 15 per critical, 7 per high, 3 per medium, 1 per low; plus up to 10 for good habits (tests, CI, .env.example, README, migrations). Some findings are heuristics labelled "verify" — confirm before changing code. This audit reads code and config; it cannot see dashboard settings (Supabase RLS, hosting) — those are flagged for a human to check.</p>
+</body></html>
