@@ -3,6 +3,14 @@
 A one-click senior-engineer audit for ANY web project — vibe-coded or not.
 Stdlib-only Python, no installs, no accounts, no money spent.
 
+## Request an audit
+
+First 5 audits are free, then $49 (including a human check of your Supabase dashboard — the one thing a scanner cannot see).
+
+**Request one here: https://forms.gle/pKDLBtsbxF8gc8SB7**
+
+Or run it yourself — one command, below.
+
 ## Use it (one command)
 
 ```bash
